@@ -20,9 +20,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = '^1czic2mpr#c-f*6bqp6q-2_8i3ysf2e)$lp02&ut8q+@yd8@i'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-TEMPLATE_DEBUG = True
+#DEBUG = True
+#TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -56,20 +55,20 @@ WSGI_APPLICATION = 'guesswu.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
-DATABASES = {
+#DATABASES = {
 #    'default': {
 #        'ENGINE': 'django.db.backends.sqlite3',
 #        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #    }
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'guesswu',
-        'USER': 'intranet',
-        'PASSWORD': 'xyzxyz',
-        'HOST': '192.168.3.10',
-        'PORT': '',
-    }
-}
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#        'NAME': '',
+#        'USER': '',
+#        'PASSWORD': '',
+#        'HOST': '',
+#        'PORT': '',
+#    }
+#}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
