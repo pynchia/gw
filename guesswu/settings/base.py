@@ -23,6 +23,17 @@ def get_env_variable(var_name):
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+from unipath import Path
+PROJECT_DIR = Path(__file__).ancestor(2)
+MEDIA_ROOT = PROJECT_DIR.child("media")
+STATIC_ROOT = PROJECT_DIR.child("static")
+STATICFILES_DIRS = (
+        PROJECT_DIR.child("assets"),
+        )
+TEMPLATE_DIRS = (
+        PROJECT_DIR.child("templates"),
+        )
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
