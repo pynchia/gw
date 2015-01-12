@@ -14,10 +14,10 @@ DATABASES = {
 #    }
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'guesswu',
-        'USER': 'intranet',
-        'PASSWORD': 'xyzxyz',
-        'HOST': '192.168.3.10',
+        'HOST': get_env_variable("DJANGO_DB_HOST"),
+        'NAME': get_env_variable("DJANGO_DB_NAME"),
+        'USER': get_env_variable("DJANGO_DB_USER"),
+        'PASSWORD': get_env_variable("DJANGO_DB_PWD"),
         'PORT': '',
     }
 }
