@@ -17,7 +17,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 're24bw^(9unf)d4t)*el%#1wg95hvwo7p8t@98^@tj*tpe34qw'
+SECRET_KEY = '^1czic2mpr#c-f*6bqp6q-2_8i3ysf2e)$lp02&ut8q+@yd8@i'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -57,9 +57,17 @@ WSGI_APPLICATION = 'guesswu.wsgi.application'
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
 DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#    }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'guesswu',
+        'USER': 'intranet',
+        'PASSWORD': 'xyzxyz',
+        'HOST': '192.168.3.10',
+        'PORT': '',
     }
 }
 
