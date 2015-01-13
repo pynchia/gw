@@ -24,7 +24,7 @@ def get_env_variable(var_name):
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 from unipath import Path
-PROJECT_DIR = Path(__file__).ancestor(2)
+PROJECT_DIR = Path(__file__).ancestor(3)
 MEDIA_ROOT = PROJECT_DIR.child("media")
 STATIC_ROOT = PROJECT_DIR.child("static")
 STATICFILES_DIRS = (
