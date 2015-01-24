@@ -60,6 +60,10 @@ INSTALLED_APPS = (
 )
 INSTALLED_APPS += ("play", )
 
+FIXTURE_DIRS = (
+           '/home/mbb/prj/guesswu/play/fixtures/',
+           )
+
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
