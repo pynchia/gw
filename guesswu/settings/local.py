@@ -1,6 +1,8 @@
 # settings/local.py
 from .base import *
 
+SECRET_KEY = get_env_variable("DJANGO_SECRET_KEY")
+
 DEBUG = True
 TEMPLATE_DEBUG = True
 
