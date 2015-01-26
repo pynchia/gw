@@ -47,7 +47,7 @@ class Subject(models.Model):
     filename = models.CharField(max_length=FILE_NAME_MAX)
 
     def __unicode__(self):
-        return "%s (%s)" % self.name, self.filename
+        return "%s (%s)" % (self.name, self.filename)
 
 
 class Feature(models.Model):
@@ -58,7 +58,7 @@ class Feature(models.Model):
     description = models.CharField(max_length=FEATURE_DESCR_MAX)
 
     def __unicode__(self):
-        return "%16s" % self.description
+        return self.description
 
 
 class BoardElement(models.Model):
