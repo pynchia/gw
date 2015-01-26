@@ -30,9 +30,7 @@ STATIC_ROOT = PROJECT_DIR.child("static")
 #STATICFILES_DIRS = (
 #        PROJECT_DIR.child("assets"),
 #        )
-TEMPLATE_DIRS = (
-        PROJECT_DIR.child("templates"),
-        )
+TEMPLATE_DIRS = (PROJECT_DIR.child("templates"), )
 
 
 # Quick-start development settings - unsuitable for production
@@ -51,8 +49,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 )
 INSTALLED_APPS += ("play", )
+FIXTURE_DIRS = (PROJECT_DIR+"/play/fixtures", )
 
-FIXTURE_DIRS = ("/home/mbb/prj/guesswu/play/fixtures/", )
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
