@@ -16,35 +16,6 @@ FEATURE_DESCR_MAX = 128
 BOARD_ELEMENTS = 24
 
 
-class Player(models.Model):
-    """the player. Each player plays against the computer
-    """
-    user = models.OneToOneField(User)
-    games_played = models.IntegerField(default=0)
-    games_won = models.IntegerField(default=0)
-
-    def add_board_elements(self):
-        for subj in Subject.objects.all():
-            self.boardelement_set.create(player=self,
-                                         subject=subj)
-
-
-class Game(models.Model):
-    """"the games played by the player. Only one game can be active,
-    The player must finish or cancel the current game before starting
-    a new one.
-    A game can be interrupted without any warning. It will resume
-    automatically next time the player shows up 
-    """
-    player = models.ForeignKey(Player)
-    active = models.BooleanField(default=True)
-    won = models.BooleanField(default=False)
-    created_on = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        get_latest_by = "created_on"
-
-
 class Subject(models.Model):
     """the characters to be guessed
     """
@@ -64,6 +35,43 @@ class Feature(models.Model):
 
     def __unicode__(self):
         return self.description
+
+
+class Player(models.Model):
+    """the player. Each player plays against the computer
+    """
+    user = models.OneToOneField(User)
+    games_played = models.IntegerField(default=0)
+    games_won = models.IntegerField(default=0)
+
+    def add_board_elements(self):
+        for subj in Subject.objects.all():
+            self.boardelement_set.create(player=self,
+                                         subject=subj)
+
+
+class Game(models.Model):
+    """"the games played by the player. Only one game can be active,
+    The player must finish or cancel the current game before starting
+    a new one.
+    A game can be interrupted without any warning. It will resume
+    automatically next time the player shows up
+    """
+    # to whom the game belongs
+    player = models.ForeignKey(Player)
+    # the subject the computer must guess
+    player_subject = models.ForeignKey(Subject)
+    # the subject the player must guess
+    computer_subject = models.ForeignKey(Subject)
+    # if the game is pending
+    active = models.BooleanField(default=True)
+    # if the game was won by the player
+    won_by_player = models.BooleanField(default=False)
+    # timestamp
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        get_latest_by = "created_on"
 
 
 class BoardElement(models.Model):
