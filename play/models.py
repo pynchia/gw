@@ -26,7 +26,7 @@ class Player(models.Model):
     def add_board_elements(self):
         for subj in Subject.objects.all():
             self.boardelement_set.create(player=self,
-                                          subject=subj)
+                                         subject=subj)
 
 
 class Game(models.Model):
