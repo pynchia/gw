@@ -85,7 +85,7 @@ class Game(models.Model):
 
 class BoardElement(models.Model):
     """The characters lying on the board (24 on the player's board and
-    24 one the computer's)
+    24 on the computer's)
     There will only be 24+24 entries for each player.
     They will be created when the player signs up.
     They refer to the latest game played. They will be recycled by
@@ -96,3 +96,5 @@ class BoardElement(models.Model):
     active = models.BooleanField(default=True)
     owned_by_player = models.BooleanField(default=True)
 
+    def __unicode__(self):
+        return str(self.subject)
