@@ -45,24 +45,33 @@ class Player(models.Model):
     games_won = models.IntegerField(default=0)
 
     def add_board_elements(self):
+        # create board element for the player
         for subj in Subject.objects.all():
             self.boardelement_set.create(player=self,
-                                         subject=subj)
+                                         subject=subj,
+                                         owned_by_player=True)
+        # and for the computer
+        for subj in Subject.objects.all():
+            self.boardelement_set.create(player=self,
+                                         subject=subj,
+                                         owned_by_player=False)
 
 
 class Game(models.Model):
     """"the games played by the player. Only one game can be active,
     The player must finish or cancel the current game before starting
     a new one.
-    A game can be interrupted without any warning. It will resume
-    automatically next time the player shows up
+    A game can be interrupted. It will resume automatically next time
+    the player shows up
     """
     # to whom the game belongs
     player = models.ForeignKey(Player)
     # the subject the computer must guess
-    player_subject = models.ForeignKey(Subject)
+    player_subject = models.ForeignKey(Subject,
+                                       related_name='player_subj')
     # the subject the player must guess
-    computer_subject = models.ForeignKey(Subject)
+    computer_subject = models.ForeignKey(Subject,
+                                         related_name='computer_subj')
     # if the game is pending
     active = models.BooleanField(default=True)
     # if the game was won by the player
@@ -85,3 +94,5 @@ class BoardElement(models.Model):
     subject = models.ForeignKey(Subject)
     player = models.ForeignKey(Player)
     active = models.BooleanField(default=True)
+    owned_by_player = models.BooleanField(default=True)
+
