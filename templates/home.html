@@ -5,8 +5,8 @@
 {% block actions %}
 	{% if user.is_authenticated %}
 		<h2>Welcome {{ user.username }}</h2>
-		<h3><a href="{% url newgame %}">Start a new game</a></h3>
-		<h3><a href="{% url continuegame %}">Continue last game</a></h3>
+		<h3><a href="{% url 'play:newgame' %}">Start a new game</a></h3>
+		<h3><a href="{% url 'play:playgame' %}">Continue last game</a></h3>
 	{% else %}
 		<h3>Welcome to the game</h3>
 		<h3>Please <a href="{% url 'signup' %}">register</a>

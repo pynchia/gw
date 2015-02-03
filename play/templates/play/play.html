@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block header %}
+	<h1>Guess Wu?</h1>
+{% endblock %}
+{% block actions %}
+		<h3><a href="{% url 'play:newgame' %}">Start a new game</a></h3>
+{% endblock %}
+{% block board %}
+	<div class="col span_7_of_9">
+		<h2>Characters</h2>
+		<a href="xyz"><img src="subjects/01.png" alt=""></a>
+	</div>
+	<div class="col span_2_of_9">
+		<h2>Features</h2>
+		<a href="xyz">feature</a>
+	</div>
+{% endblock %}
