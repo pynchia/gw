@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 
 from . import models
 
+
 class NewGameView(generic.RedirectView):
     pattern_name = "play"
 
@@ -16,6 +17,7 @@ class NewGameView(generic.RedirectView):
         # create a new game
 
         return super(NewGameView, self).get(request, *args, **kwargs)
+
 
 class PlayGameView(generic.TemplateView):
     template_name = "play/play.html"
