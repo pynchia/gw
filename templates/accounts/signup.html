@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block header %}
+	<h1>Register on Guess Wu?</h1>
+{% endblock %}
+{% block actions %}
+	<h3>Enter your details below</h3>
+{% endblock %}
+{% block board %}
+<form action='' method='POST'>
+	{% csrf_token %}
+	{{ form.as_p }}
+	<input type="submit" value="Register">
+</form>
+{% endblock %}

@@ -59,16 +59,15 @@
 </head>
 <body>
 <div class="header">
-	<h1>Guess Wu?</h1>
+	{% block header %}{% endblock %}
 </div>
 <div class="section group">
-	<h2>Commands and options go here</h2>
 	{% block actions %}{% endblock %}
 </div>
 <div class="section group">
+	{% block board %}
 	<div class="col span_7_of_9">
 		<h2>Characters</h2>
-		{% block board %}
 			<a href="xyz"><img src="subjects/01.png" alt=""></a>
 			<a href="xyz"><img src="subjects/02.png" alt=""></a>
 			<a href="xyz"><img src="subjects/03.png" alt=""></a>
@@ -93,14 +92,12 @@
 			<a href="xyz"><img src="subjects/22.png" alt=""></a>
 			<a href="xyz"><img src="subjects/23.png" alt=""></a>
 			<a href="xyz"><img src="subjects/24.png" alt=""></a>
-		{% endblock %}
 	</div>
 	<div class="col span_2_of_9">
 		<h2>Features</h2>
-		{% block features %}
-			<a href="xyz">feature</a>
-		{% endblock %}
+		<a href="xyz">feature</a>
 	</div>
+	{% endblock %}
 </div>
 </body>
 </html>
