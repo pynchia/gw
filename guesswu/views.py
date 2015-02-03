@@ -7,18 +7,18 @@ from django.contrib.auth.models import User
 
 
 class HomePageView(generic.TemplateView):
-    template_name = 'home.html'
+    template_name = "home.html"
 
 
 class SignUpView(generic.CreateView):
     model = User
-    template_name = 'accounts/signup.html'
+    template_name = "accounts/signup.html"
     form_class = UserCreationForm
     success_url = reverse_lazy("login")
 
 
 class LoginView(generic.FormView):
-    template_name = 'accounts/login.html'
+    template_name = "accounts/login.html"
     form_class = AuthenticationForm
     success_url = reverse_lazy("home")
 
@@ -32,8 +32,9 @@ class LoginView(generic.FormView):
         login(self.request, form.get_user())
         return super(LoginView, self).form_valid(form)
 
+
 class LogoutView(generic.RedirectView):
-    pattern_name = 'home'
+    pattern_name = "home"
 
     def get(self, request, *args, **kwargs):
         logout(request)
