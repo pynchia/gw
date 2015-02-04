@@ -33,6 +33,17 @@ class Feature(models.Model):
     subject = models.ManyToManyField(Subject)
     description = models.CharField(max_length=FEATURE_DESCR_MAX)
 
+    def matching_elements(self, player, owned_by_player):
+        """Return the queryset of board elements matching
+        the feature, player and belonging to the player/computer"""
+        # get all the subjects matching the feature
+        subjects = self.subject.all() 
+        board_elements = player.boardelement_set.filter(
+                                active=True,
+                                owned_by_player=owned_by_player,
+                                subject__in=subjects)
+        return board_elements
+
     def __unicode__(self):
         return self.description
 
@@ -40,8 +51,11 @@ class Feature(models.Model):
 class Player(models.Model):
     """the player. Each player plays against the computer
     """
+    # the django user it extends
     user = models.OneToOneField(User)
+    # the number of games completed
     games_played = models.IntegerField(default=0)
+    # the number of games won
     games_won = models.IntegerField(default=0)
 
     def add_board_elements(self):
@@ -55,6 +69,16 @@ class Player(models.Model):
             self.boardelement_set.create(player=self,
                                          subject=subj,
                                          owned_by_player=False)
+
+    def get_features(self, owned_by_player):
+        """Return the features along with the number of board
+        elements that match each"""
+        features = Feature.objects.all()
+        for feat in features:
+            feat.num_el_match = feat.matching_elements(
+                                    player=self,
+                                    owned_by_player=owned_by_player).count()
+        return features
 
 
 class Game(models.Model):

@@ -8,10 +8,14 @@
 {% block board %}
 	<div class="col span_7_of_9">
 		<h2>Characters</h2>
-		<a href="foff"><img src="{{STATIC_URL}}subjects/01.png" alt=""></a>
+		{% for character in character_list %}
+		<a href="guess"><img src="{{STATIC_URL}}subjects/{{ character.subject.filename }}" alt=""></a>
+		{% endfor %}
 	</div>
 	<div class="col span_2_of_9">
 		<h2>Features</h2>
-		<a href="xyz">feature</a>
+		{% for feature in feature_list %}
+		<a href="xyz">{{ feature.description }}({{ feature.num_el_match }})</a>
+		{% endfor %}
 	</div>
 {% endblock %}

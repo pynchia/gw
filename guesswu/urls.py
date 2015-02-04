@@ -7,5 +7,6 @@ urlpatterns = patterns('',
     url(r'^$', views.HomePageView.as_view(), name='home'),
     url(r'^accounts/signup/$', views.SignUpView.as_view(), name='signup'),
     url(r'^accounts/login/$', views.LoginView.as_view(), name='login'),
+    url(r'^accounts/logout/$', views.LogoutView.as_view(), name='logout'),
     url(r'^play/', include('play.urls', namespace='play', app_name='play')),
 )
