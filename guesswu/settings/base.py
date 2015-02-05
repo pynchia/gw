@@ -25,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 from unipath import Path
 PROJECT_DIR = Path(__file__).ancestor(3)
-MEDIA_ROOT = PROJECT_DIR.child("media")
+#MEDIA_ROOT = PROJECT_DIR.child("media")
 STATIC_ROOT = PROJECT_DIR.child("static")
 #STATICFILES_DIRS = (
 #        PROJECT_DIR.child("static"),
@@ -36,7 +36,7 @@ TEMPLATE_DIRS = (PROJECT_DIR.child("templates"), )
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["192.168.3.4", ]
 
 # Application definition
 

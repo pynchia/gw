@@ -27,7 +27,7 @@ class PlayGameView(generic.ListView):
     def get_queryset(self):
         return BoardElement.objects.filter(
                 player=self.request.user.player,
-                owned_by_player=True)
+                owned_by_player=True).order_by('id')
 
     def get_context_data(self):
         context = super(PlayGameView, self).get_context_data()
