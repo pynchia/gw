@@ -22,7 +22,7 @@ class NewGameView(generic.RedirectView):
 
 class PlayGameView(generic.ListView):
     template_name = "play/play.html"
-    context_object_name = "character_list"
+    context_object_name = "player_board"
 
     def get_queryset(self):
         return BoardElement.objects.filter(
@@ -31,7 +31,13 @@ class PlayGameView(generic.ListView):
 
     def get_context_data(self):
         context = super(PlayGameView, self).get_context_data()
-        context['feature_list'] = self.request.user.player.get_features(
+        context['player_features'] = self.request.user.player.get_features(
                                                        owned_by_player=True)
+        context['computer_board'] = BoardElement.objects.filter(
+                                        player=self.request.user.player,
+                                        owned_by_player=False).order_by('id')
+        context['computer_features'] = self.request.user.player.get_features(
+                                                       owned_by_player=False)
+        context['game'] = self.request.user.player.game_set.latest()
         return context
 

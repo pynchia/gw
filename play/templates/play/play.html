@@ -1,27 +1,65 @@
 {% extends "base.html" %}
 {% block header %}
-	<h1>Guess Wu?</h1>
+  <h1>Guess Wu?</h1>
 {% endblock %}
 {% block actions %}
-		<h3><a href="{% url 'play:newgame' %}">Start a new game</a></h3>
+  <h3><a href="{% url 'play:newgame' %}">Start a new game</a></h3>
 {% endblock %}
-{% block board %}
-	<div class="col span_7_of_9">
-		<h2>Characters</h2>
-		{% for character in character_list %}
-		{% if character.active %}
-			<a href="guess"><img src="{{STATIC_URL}}subjects/{{ character.subject.filename }}.png" alt=""></a>
-		{% else %}
-			<img src="{{STATIC_URL}}subjects/{{ character.subject.filename }}-inactive.png" alt=""></a>
-		{% endif %}
-		{% endfor %}
+{% block boards %}
+  {% if not game.active %}
+    <div class="section group">
+    {% if game.won_by_player %}
+   	<div class="col span_7_of_9">
+	  <h2>You win! Computer's character is</h2>
+	  <a href=""><img src="{{STATIC_URL}}subjects/{{ game.computer_subject.filename }}.png" alt=""></a>
 	</div>
-	<div class="col span_2_of_9">
-		<h2>Features</h2>
-		{% for feature in feature_list %}
-		<p>
-		 <a href="xyz">{{ feature.description }} ({{ feature.num_el_match }})</a>
-		 </p>
-		{% endfor %}
+    {% else %}
+   	<div class="col span_7_of_9">
+	  <h2>The Computer wins! Your character is</h2>
+	  <a href=""><img src="{{STATIC_URL}}subjects/{{ game.player_subject.filename }}.png" alt=""></a>
 	</div>
+    {% endif %}
+    </div>
+  {% else %}
+    <div class="section group">
+      <div class="col span_7_of_9">
+        <h2>Computer's character is...</h2>
+        {% for character in player_board %}
+          {% if character.active %}
+	    <a href="guess"><img src="{{STATIC_URL}}subjects/{{ character.subject.filename }}.png" alt=""></a>
+	  {% else %}
+	    <img src="{{STATIC_URL}}subjects/{{ character.subject.filename }}-inactive.png" alt=""></a>
+	  {% endif %}
+        {% endfor %}
+      </div>
+      <div class="col span_2_of_9">
+        <h2>Features</h2>
+        {% for feature in player_features %}
+          <p>
+	    <a href="xyz">{{ feature.description }} ({{ feature.num_el_match }})</a>
+	  </p>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="section group">
+      <div class="col span_7_of_9">
+	<h2>{{ user.username }}'s character is...</h2>
+        {% for character in computer_board %}
+          {% if character.active %}
+	    <a href="guess"><img src="{{STATIC_URL}}subjects/{{ character.subject.filename }}.png" alt=""></a>
+	  {% else %}
+	    <img src="{{STATIC_URL}}subjects/{{ character.subject.filename }}-inactive.png" alt=""></a>
+	  {% endif %}
+        {% endfor %}
+      </div>
+      <div class="col span_2_of_9">
+        <h2>Features</h2>
+        {% for feature in computer_features %}
+          <p>
+	    <a href="xyz">{{ feature.description }} ({{ feature.num_el_match }})</a>
+	  </p>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
 {% endblock %}
