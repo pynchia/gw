@@ -28,7 +28,7 @@
           {% if character.active %}
 	    <a href="guess"><img src="{{STATIC_URL}}subjects/{{ character.subject.filename }}.png" alt=""></a>
 	  {% else %}
-	    <img src="{{STATIC_URL}}subjects/{{ character.subject.filename }}-inactive.png" alt=""></a>
+	    <img src="{{STATIC_URL}}subjects/{{ character.subject.filename }}-inactive.png" alt="">
 	  {% endif %}
         {% endfor %}
       </div>
@@ -46,9 +46,13 @@
 	<h2>{{ user.username }}'s character is...</h2>
         {% for character in computer_board %}
           {% if character.active %}
-	    <a href="guess"><img src="{{STATIC_URL}}subjects/{{ character.subject.filename }}.png" alt=""></a>
+            {% if character.subject != game.player_subject %}
+	      <img src="{{STATIC_URL}}subjects/{{ character.subject.filename }}.png" alt="">
+	    {% else %}
+	      <img src="{{STATIC_URL}}subjects/{{ character.subject.filename }}-target.png" alt="">
+	    {% endif %}
 	  {% else %}
-	    <img src="{{STATIC_URL}}subjects/{{ character.subject.filename }}-inactive.png" alt=""></a>
+	    <img src="{{STATIC_URL}}subjects/{{ character.subject.filename }}-inactive.png" alt="">
 	  {% endif %}
         {% endfor %}
       </div>
@@ -56,7 +60,7 @@
         <h2>Features</h2>
         {% for feature in computer_features %}
           <p>
-	    <a href="xyz">{{ feature.description }} ({{ feature.num_el_match }})</a>
+	    {{ feature.description }} ({{ feature.num_el_match }})
 	  </p>
         {% endfor %}
       </div>
