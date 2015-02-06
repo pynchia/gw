@@ -38,14 +38,15 @@ class PlayGameView(generic.ListView):
                 owned_by_player=True).order_by('id')
 
     def get_context_data(self):
+        player = self.request.user.player
         context = super(PlayGameView, self).get_context_data()
-        context['player_features'] = self.request.user.player.get_features(
-                                                       owned_by_player=True)
+        context['player_features'] = player.get_features(
+                                               owned_by_player=True)
         context['computer_board'] = BoardElement.objects.filter(
-                                        player=self.request.user.player,
+                                        player=player,
                                         owned_by_player=False).order_by('id')
-        context['computer_features'] = self.request.user.player.get_features(
-                                                       owned_by_player=False)
-        context['game'] = self.request.user.player.game_set.latest()
+        context['computer_features'] = player.get_features(
+                                                 owned_by_player=False)
+        context['game'] = player.game_set.latest()
         return context
 
