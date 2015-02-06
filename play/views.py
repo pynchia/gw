@@ -8,14 +8,22 @@ from play.models import BoardElement, Player, Feature
 
 
 class NewGameView(generic.RedirectView):
-    pattern_name = "play"
+    pattern_name = "play:playgame"
 
     def get(self, request, *args, **kwargs):
 
         # close any pending game
+        player = self.request.user.player
+        player.game_set.filter(active=True).update(active=False)
 
         # create a new game
-        # activate all board elements
+        player_subject_id = 1
+        computer_subject_id = 2
+        player.game_set.create(player_subject_id=player_subject_id,
+                               computer_subject_id=computer_subject_id)
+        
+        # activate all board elements for the player
+        player.boardelement_set.update(active=True)
 
         return super(NewGameView, self).get(request, *args, **kwargs)
 

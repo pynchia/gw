@@ -23,7 +23,7 @@
         <h2>Computer's character is...</h2>
         {% for character in player_board %}
           {% if character.active %}
-	  <a href="guess-{{ character.subject_id }}"><img src="{{STATIC_URL}}subjects/{{ character.subject.filename }}.png" alt=""></a>
+	    <a href="guess"><img src="{{STATIC_URL}}subjects/{{ character.subject.filename }}.png" alt=""></a>
 	  {% else %}
 	    <img src="{{STATIC_URL}}subjects/{{ character.subject.filename }}-inactive.png" alt="">
 	  {% endif %}

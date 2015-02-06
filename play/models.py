@@ -92,10 +92,10 @@ class Game(models.Model):
     player = models.ForeignKey(Player)
     # the subject the computer must guess
     player_subject = models.ForeignKey(Subject,
-                                       related_name='player_subj')
+                                       related_name='player_subject')
     # the subject the player must guess
     computer_subject = models.ForeignKey(Subject,
-                                         related_name='computer_subj')
+                                         related_name='computer_subject')
     # if the game is pending
     active = models.BooleanField(default=True)
     # if the game was won by the player
