@@ -53,6 +53,6 @@ class HomePageView(generic.TemplateView):
 
     def get_context_data(self):
         context = super(HomePageView, self).get_context_data()
-        context["continue_game"] = getattr(self, "continue_game", None)
+        context["continue_game"] = getattr(self, "continue_game", False)
         return context
 
