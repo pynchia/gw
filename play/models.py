@@ -33,16 +33,19 @@ class Feature(models.Model):
     subject = models.ManyToManyField(Subject)
     description = models.CharField(max_length=FEATURE_DESCR_MAX)
 
-    def matching_elements(self, player, owned_by_player):
-        """Return the queryset of board elements matching
-        the feature, player and belonging to the player/computer"""
-        # get all the subjects matching the feature
+    def matching_el(self, player, match, owned_by_player):
+        """Return the queryset of active board elements matching/non-matching
+        (match=True/match=False) the feature, player and belonging to the
+        player/computer"""
         subjects = self.subject.all() 
-        board_elements = player.boardelement_set.filter(
-                                active=True,
-                                owned_by_player=owned_by_player,
-                                subject__in=subjects)
-        return board_elements
+        board_elements = player.board_el(owned_by_player=owned_by_player)
+        if match:
+            # get all the subjects matching the feature
+            match_elements = board_elements.filter(subject__in=subjects)
+        else:
+            # get all the subjects non-matching the feature
+            match_elements = board_elements.exclude(subject__in=subjects)
+        return match_elements
 
     def __unicode__(self):
         return self.description
@@ -70,13 +73,22 @@ class Player(models.Model):
                                          subject=subj,
                                          owned_by_player=False)
 
+    def board_el(self, owned_by_player):
+        """Return the queryset of active board elements matching
+        the player and belonging to the player/computer"""
+        # get all the subjects matching the feature
+        return self.boardelement_set.filter(
+                                        active=True,
+                                        owned_by_player=owned_by_player)
+
     def get_features(self, owned_by_player):
         """Return the features along with the number of board
         elements that match each"""
         features = Feature.objects.all()
         for feat in features:
-            feat.num_el_match = feat.matching_elements(
+            feat.num_el_match = feat.matching_el(
                                     player=self,
+                                    match=True,
                                     owned_by_player=owned_by_player).count()
         return features
 

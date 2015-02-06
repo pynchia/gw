@@ -12,8 +12,8 @@ class NewGameView(generic.RedirectView):
 
     def get(self, request, *args, **kwargs):
 
-        # close any pending game
         player = self.request.user.player
+        # close any pending game
         player.game_set.filter(active=True).update(active=False)
 
         # create a new game
@@ -49,4 +49,17 @@ class PlayGameView(generic.ListView):
                                                  owned_by_player=False)
         context['game'] = player.game_set.latest()
         return context
+
+
+class PickFeatureView(generic.RedirectView):
+    pattern_name = "play:playgame"
+
+    def get(self, request, *args, **kwargs):
+        feat_id = self.kwargs['feat_id']
+        feature = Feature.objects.get(pk=feat_id)
+
+        player = self.request.user.player
+
+        return super(NewGameView, self).get(request, *args, **kwargs)
+
 
