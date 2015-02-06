@@ -1,7 +1,4 @@
 {% extends "base.html" %}
-{% block header %}
-  <h1>Guess Wu?</h1>
-{% endblock %}
 {% block actions %}
   <h3><a href="{% url 'play:newgame' %}">Start a new game</a></h3>
 {% endblock %}
@@ -11,12 +8,12 @@
     {% if game.won_by_player %}
    	<div class="col span_7_of_9">
 	  <h2>You win! Computer's character is</h2>
-	  <a href=""><img src="{{STATIC_URL}}subjects/{{ game.computer_subject.filename }}.png" alt=""></a>
+	  <img src="{{STATIC_URL}}subjects/{{ game.computer_subject.filename }}.png" alt="">
 	</div>
     {% else %}
    	<div class="col span_7_of_9">
 	  <h2>The Computer wins! Your character is</h2>
-	  <a href=""><img src="{{STATIC_URL}}subjects/{{ game.player_subject.filename }}.png" alt=""></a>
+	  <img src="{{STATIC_URL}}subjects/{{ game.player_subject.filename }}.png" alt="">
 	</div>
     {% endif %}
     </div>
@@ -26,7 +23,7 @@
         <h2>Computer's character is...</h2>
         {% for character in player_board %}
           {% if character.active %}
-	    <a href="guess"><img src="{{STATIC_URL}}subjects/{{ character.subject.filename }}.png" alt=""></a>
+	  <a href="guess-{{ character.subject_id }}"><img src="{{STATIC_URL}}subjects/{{ character.subject.filename }}.png" alt=""></a>
 	  {% else %}
 	    <img src="{{STATIC_URL}}subjects/{{ character.subject.filename }}-inactive.png" alt="">
 	  {% endif %}
