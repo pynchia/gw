@@ -1,4 +1,4 @@
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse, reverse_lazy
 # from django.http import HttpResponseRedirect
 from django.views import generic
 # from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -52,14 +52,32 @@ class PlayGameView(generic.ListView):
 
 
 class PickFeatureView(generic.RedirectView):
-    pattern_name = "play:playgame"
+    # Django bug 17914: reverse() and pattern_name give error
+    # on namespaced views!
+    url = "/play/play"
 
     def get(self, request, *args, **kwargs):
         feat_id = self.kwargs['feat_id']
         feature = Feature.objects.get(pk=feat_id)
+        # all the subjects which have that feature
+        subjects = feature.subject.all()
 
         player = self.request.user.player
+        game = player.game_set.latest()
+        match = game.computer_subject not in subjects 
+        elements = feature.matching_el(player=player,
+                                       match=match,
+                                       owned_by_player=True)
+        elements.update(active=False)
+        num_el_left = player.board_el(owned_by_player=True).count()
+        if num_el_left == 0:  # you have eliminated all characters! Loser!
+            game.won_by_player = False
+            game.active = False
+            game.save()
+        elif num_el_left == 1:  # only one left! Winner!
+            game.won_by_player = True
+            game.active = False
+            game.save()
 
-        return super(NewGameView, self).get(request, *args, **kwargs)
-
+        return super(PickFeatureView, self).get(request, *args, **kwargs)
 

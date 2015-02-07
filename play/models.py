@@ -82,7 +82,7 @@ class Player(models.Model):
                                         owned_by_player=owned_by_player)
 
     def get_features(self, owned_by_player):
-        """Return the features along with the number of board
+        """Return all the features along with the number of board
         elements that match each"""
         features = Feature.objects.all()
         for feat in features:

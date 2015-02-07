@@ -11,5 +11,5 @@ urlpatterns = patterns('',
         name='playgame'),
     url(r'^feat/(?P<feat_id>\d+)/$',
         login_required(views.PickFeatureView.as_view()),
-        name='feature'),
+        name='pickfeat'),
 )

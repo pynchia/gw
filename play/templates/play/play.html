@@ -32,9 +32,11 @@
       <div class="col span_2_of_9">
         <h2>Features</h2>
         {% for feature in player_features %}
-          <p>
-	    <a href="xyz">{{ feature.description }} ({{ feature.num_el_match }})</a>
-	  </p>
+	  {% if feature.num_el_match %}
+            <p>
+	    <a href="{% url 'play:pickfeat' feature.id %}">{{ feature.description }} ({{ feature.num_el_match }})</a>
+	    </p>
+	  {% endif %}
         {% endfor %}
       </div>
     </div>
