@@ -12,7 +12,7 @@ class NewGameView(generic.RedirectView):
 
     def get(self, request, *args, **kwargs):
 
-        player = self.request.user.player
+        player = request.user.player
         # close any pending game
         player.game_set.filter(active=True).update(active=False)
 
@@ -33,9 +33,9 @@ class PlayGameView(generic.ListView):
     context_object_name = "player_board"
 
     def get_queryset(self):
-        return BoardElement.objects.filter(
-                player=self.request.user.player,
-                owned_by_player=True).order_by('id')
+        player = self.request.user.player
+        return player.boardelement_set.filter(owned_by_player=True
+                                             ).order_by('id')
 
     def get_context_data(self):
         player = self.request.user.player
@@ -70,11 +70,7 @@ class PickFeatureView(generic.RedirectView):
                                        owned_by_player=True)
         elements.update(active=False)
         num_el_left = player.board_el(owned_by_player=True).count()
-        if num_el_left == 0:  # you have eliminated all characters! Loser!
-            game.won_by_player = False
-            game.active = False
-            game.save()
-        elif num_el_left == 1:  # only one left! Winner!
+        if num_el_left == 1:  # only one left! Winner!
             game.won_by_player = True
             game.active = False
             game.save()

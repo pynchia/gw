@@ -85,11 +85,17 @@ class Player(models.Model):
         """Return all the features along with the number of board
         elements that match each"""
         features = Feature.objects.all()
+        num_el_onboard = self.board_el(owned_by_player=owned_by_player
+                                      ).count()
         for feat in features:
-            feat.num_el_match = feat.matching_el(
-                                    player=self,
-                                    match=True,
-                                    owned_by_player=owned_by_player).count()
+            num_el_match = feat.matching_el(player=self, match=True,
+                                            owned_by_player=owned_by_player
+                                           ).count()
+            if num_el_match == 0 or num_el_match == num_el_onboard:
+                feat.num_el_match = 0
+            else:
+                feat.num_el_match = num_el_match
+
         return features
 
 
