@@ -7,7 +7,7 @@
     <div class="section group">
     {% if game.won_by_player %}
    	<div class="col span_7_of_9">
-	  <h2>You win! My character is</h2>
+	  <h2>You win {{ user.username }}! My character is</h2>
 	  <img src="{{STATIC_URL}}subjects/{{ game.computer_subject.filename }}.png" alt="">
 	</div>
     {% else %}
