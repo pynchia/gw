@@ -24,8 +24,8 @@ class NewGameView(generic.RedirectView):
         subjects = Subject.objects.all()
         num_subjects = subjects.count()
 
-        player_subject_id = .random.randint(0, num_subjects-1)
-        computer_subject_id = .random.randint(0, num_subjects-1)
+        player_subject_id = random.randint(0, num_subjects-1)
+        computer_subject_id = random.randint(0, num_subjects-1)
         player.game_set.create(player_subject_id=player_subject_id,
                                computer_subject_id=computer_subject_id)
         
@@ -59,7 +59,7 @@ class PlayGameView(generic.ListView):
 
 
 class PickFeatureView(generic.TemplateView):
-    template_name = "final.html"
+    template_name = "play/end.html"
 
 #class PickFeatureView(generic.RedirectView):
     # Django bug 17914: reverse() and pattern_name give error
@@ -114,22 +114,29 @@ class PickFeatureView(generic.TemplateView):
                     game.won_by = game.COMPUTER
                 else:
                     # go ahead to the player's turn
-                    return redirect(reverse_lazy("play:play"))
+                    return redirect(reverse_lazy("play:playgame"))
+        else:
+            # it must guess the player's character
+            # get the remaining characters on its board
+            computer_els = player.board_el(owned_by_player=False)
+            # guess one randomly
+            guessed_el = random.choice(computer_els)
+            # is it the correct guess?
+            if guessed_el.subject == game.player_subject:
+                # yes! It's a DRAW!
+                game.won_by = game.DRAW
             else:
-                # it must guess the player's character
-                # get the remaining characters on its board
-                computer_els = player.board_el(owned_by_player=False)
-                # guess one randomly
-                guessed_el = random.choice(computer_els)
-                # is it the correct guess?
-                if guessed_el.subject == game.player_subject:
-                    # yes! It's a DRAW!
-                    game.won_by = game.DRAW
-                else:
-                    game.won_by = game.PLAYER
+                game.won_by = game.PLAYER
 
         game.active = False
         game.save()
+        self.game = game
 
         return super(PickFeatureView, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(PickFeatureView, self).get_context_data(**kwargs)
+        context['game'] = self.game
+        return context
+
 

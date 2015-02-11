@@ -3,21 +3,6 @@
   <h3><a href="{% url 'play:newgame' %}">Start a new game</a></h3>
 {% endblock %}
 {% block boards %}
-  {% if not game.active %}
-    <div class="section group">
-    {% if game.won_by_player %}
-   	<div class="col span_7_of_9">
-	  <h2>You win {{ user.username }}! My character is</h2>
-	  <img src="{{STATIC_URL}}subjects/{{ game.computer_subject.filename }}.png" alt="">
-	</div>
-    {% else %}
-   	<div class="col span_7_of_9">
-	  <h2>I win! Your character is</h2>
-	  <img src="{{STATIC_URL}}subjects/{{ game.player_subject.filename }}.png" alt="">
-	</div>
-    {% endif %}
-    </div>
-  {% else %}
     <div class="section group">
       <div class="col span_7_of_9">
         <h2>Computer's character is...</h2>
@@ -32,11 +17,9 @@
       <div class="col span_2_of_9">
         <h2>Features</h2>
         {% for feature in player_features %}
-	  {% if feature.num_el_match %}
             <p>
 	    <a href="{% url 'play:pickfeat' feature.id %}">{{ feature.description }} ({{ feature.num_el_match }})</a>
 	    </p>
-	  {% endif %}
         {% endfor %}
       </div>
     </div>
@@ -64,5 +47,4 @@
         {% endfor %}
       </div>
     </div>
-  {% endif %}
 {% endblock %}

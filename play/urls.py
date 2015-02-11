@@ -12,4 +12,7 @@ urlpatterns = patterns('',
     url(r'^feat/(?P<feat_id>\d+)/$',
         login_required(views.PickFeatureView.as_view()),
         name='pickfeat'),
+    url(r'^end/$',
+        login_required(views.PlayGameView.as_view()),
+        name='end'),
 )
