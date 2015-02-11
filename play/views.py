@@ -67,8 +67,7 @@ class PickFeatureView(generic.TemplateView):
 #    permanent = False
 #    url = "/play/play"
 
-    def get(self, request, *args, **kwargs):
-        feat_id = kwargs['feat_id']
+    def get(self, request, feat_id):
         feature = Feature.objects.get(pk=feat_id)
         # all the characters who have that feature
         subjects = feature.subject.all()
@@ -95,11 +94,9 @@ class PickFeatureView(generic.TemplateView):
                 else:
                     game.won_by = game.COMPUTER
             else:
-                # pick a feature
-                computer_feats = player.get_features(owned_by_player=False)
-                num_computer_feats = len(computer_feats)
-                # pick the one feature owned by half the population
-                feature = computer_feats[num_computer_feats/2]
+                # pick the best feature according to the difficulty
+                feature = game.pick_best_feature(computer_num_el)
+                # all the characters who have that feature
                 subjects = feature.subject.all()
                 match = game.player_subject not in subjects 
                 # get the characters onboard who do not match the feature
@@ -132,7 +129,7 @@ class PickFeatureView(generic.TemplateView):
         game.save()
         self.game = game
 
-        return super(PickFeatureView, self).get(request, *args, **kwargs)
+        return super(PickFeatureView, self).get(request)
 
     def get_context_data(self, **kwargs):
         context = super(PickFeatureView, self).get_context_data(**kwargs)

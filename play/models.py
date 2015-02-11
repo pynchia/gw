@@ -1,3 +1,4 @@
+import random
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -126,11 +127,34 @@ class Game(models.Model):
     )
     won_by = models.IntegerField(choices=WON_BY_CHOICES, default=DRAW)
 
+    # the level at which the computer plays
+    EASY = 0
+    HARD = 1
+    DIFFICULTY_CHOICES = (
+            (EASY, "Easy"),
+            (HARD, "Hard"),
+    )
+    difficulty = models.IntegerField(choices=DIFFICULTY_CHOICES,
+                                     default=EASY)
+
     # timestamp
     created_on = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         get_latest_by = "created_on"
+
+    def pick_best_feature(self, computer_num_el):
+        """Find the best feature to pick (for the computer), based
+        on the difficulty of the game"""
+        features = self.player.get_features(owned_by_player=False)
+        if self.difficulty == self.EASY:
+            best_feature = random.choice(features)
+        else:
+            computer_num_el /= 2
+            for best_feature in features:
+                if best_feature.num_el_match <= computer_num_el:
+                    break
+        return best_feature
 
 
 class BoardElement(models.Model):
