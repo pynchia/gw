@@ -56,10 +56,6 @@ class Player(models.Model):
     """
     # the django user it extends
     user = models.OneToOneField(User)
-    # the number of games completed
-    games_played = models.IntegerField(default=0)
-    # the number of games won
-    games_won = models.IntegerField(default=0)
 
     def add_board_elements(self):
         # create board element for the player
@@ -82,21 +78,23 @@ class Player(models.Model):
                                         owned_by_player=owned_by_player)
 
     def get_features(self, owned_by_player):
-        """Return all the features along with the number of board
-        elements that match each"""
+        """Return the features along with the number of board
+        elements that match each. Those features present in the whole set
+        of board elements or none of them are not returned"""
         features = Feature.objects.all()
         num_el_onboard = self.board_el(owned_by_player=owned_by_player
                                       ).count()
+        feat_list = []
         for feat in features:
             num_el_match = feat.matching_el(player=self, match=True,
                                             owned_by_player=owned_by_player
                                            ).count()
-            if num_el_match == 0 or num_el_match == num_el_onboard:
-                feat.num_el_match = 0
-            else:
+            if num_el_match != 0 and num_el_match != num_el_onboard:
                 feat.num_el_match = num_el_match
+                feat_list.append(feat)
 
-        return features
+        feat_list.sort(key=lambda k: k.num_el_match, reverse=True)
+        return feat_list
 
 
 class Game(models.Model):
@@ -116,8 +114,18 @@ class Game(models.Model):
                                          related_name='computer_subject')
     # if the game is pending
     active = models.BooleanField(default=True)
-    # if the game was won by the player
-    won_by_player = models.BooleanField(default=False)
+
+    # who won the game
+    DRAW = 0
+    PLAYER = 1
+    COMPUTER = 2
+    WON_BY_CHOICES = (
+            (DRAW, "Draw"),
+            (PLAYER, "Player"),
+            (COMPUTER, "Computer"),
+    )
+    won_by = models.IntegerField(choices=WON_BY_CHOICES, default=DRAW)
+
     # timestamp
     created_on = models.DateTimeField(auto_now_add=True)
 
