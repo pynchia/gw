@@ -5,7 +5,7 @@
 		{% if continue_game %}
 		  <h3><a href="{% url 'play:playgame' %}">Continue last game</a></h3>
 		{% endif %}
-		<h3><a href="{% url 'play:newgame' %}">Start a new game</a></h3>
+		<h3><a href="{% url 'play:newgame' "0" %}">Start a new game</a></h3>
 		<h3><a href="{% url 'logout' %}">Logout</a></h3>
 	{% else %}
 		<h3>Welcome to the game</h3>

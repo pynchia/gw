@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from . import views
 
 urlpatterns = patterns('',
-    url(r'^new/$',
+    url(r'^new/(?P<difficulty>\d+)/$',
         login_required(views.NewGameView.as_view()),
         name='newgame'),
     url(r'^play/$',

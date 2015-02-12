@@ -13,7 +13,7 @@ class NewGameView(generic.RedirectView):
     permanent = False
     pattern_name = "play:playgame"
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, difficulty):
 
         player = request.user.player
 
@@ -24,15 +24,16 @@ class NewGameView(generic.RedirectView):
         subjects = Subject.objects.all()
         num_subjects = subjects.count()
 
-        player_subject_id = random.randint(0, num_subjects-1)
-        computer_subject_id = random.randint(0, num_subjects-1)
+        player_subject_id = random.randint(1, num_subjects)
+        computer_subject_id = random.randint(1, num_subjects)
         player.game_set.create(player_subject_id=player_subject_id,
-                               computer_subject_id=computer_subject_id)
+                               computer_subject_id=computer_subject_id,
+                               difficulty=difficulty)
         
         # activate all board elements for the player
         player.boardelement_set.update(active=True)
 
-        return super(NewGameView, self).get(request, *args, **kwargs)
+        return super(NewGameView, self).get(request)
 
 
 class PlayGameView(generic.ListView):
