@@ -11,6 +11,9 @@ from play.models import Subject, BoardElement, Feature, Game
 
 class NewGameView(generic.RedirectView):
     permanent = False
+    # Django bug 17914: reverse() and pattern_name give error
+    # on namespaced views! So, in case, use
+    # url = "/play/play"
     pattern_name = "play:playgame"
 
     def get(self, request, difficulty):
@@ -61,12 +64,6 @@ class PlayGameView(generic.ListView):
 
 class PickFeatureView(generic.TemplateView):
     template_name = "play/end.html"
-
-#class PickFeatureView(generic.RedirectView):
-    # Django bug 17914: reverse() and pattern_name give error
-    # on namespaced views!
-#    permanent = False
-#    url = "/play/play"
 
     def get(self, request, feat_id):
         feature = Feature.objects.get(pk=feat_id)
