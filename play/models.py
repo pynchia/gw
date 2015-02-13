@@ -58,6 +58,8 @@ class Player(models.Model):
     # the django user it extends
     user = models.OneToOneField(User)
 
+    # add any further attributes beloging to the player
+
     def add_board_elements(self):
         # create board element for the player
         for subj in Subject.objects.all():
