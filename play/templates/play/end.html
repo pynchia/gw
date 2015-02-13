@@ -1,33 +1,33 @@
 {% extends "base.html" %}
 {% block actions %}
 <h3>Start a new game: 
-  <a href="{% url 'play:newgame' game.EASY %}">Easy</a>
+  <a href="{% url 'play:newgame' view.game.EASY %}">Easy</a>
   or
-  <a href="{% url 'play:newgame' game.HARD %}">Hard</a>
+  <a href="{% url 'play:newgame' view.game.HARD %}">Hard</a>
 </h3>
 {% endblock %}
 {% block boards %}
-  {% if not game.active %}
+  {% if not view.game.active %}
     <div class="section group">
-    {% if game.won_by == game.PLAYER %}
+    {% if view.game.won_by == view.game.PLAYER %}
    	<div class="col span_7_of_9">
 		<h2>You win {{ user.username|capfirst }}!</h2>
 	  <h3>My character is</h3>
-	  <img src="{{STATIC_URL}}subjects/{{ game.computer_subject.filename }}.png" alt="">
+	  <img src="{{STATIC_URL}}subjects/{{ view.game.computer_subject.filename }}.png" alt="">
 	</div>
-    {% elif game.won_by == game.COMPUTER %}
+    {% elif view.game.won_by == view.game.COMPUTER %}
    	<div class="col span_7_of_9">
 	  <h2>I win!</h2>
 	  <h3>Your character is</h3>
-	  <img src="{{STATIC_URL}}subjects/{{ game.player_subject.filename }}.png" alt="">
+	  <img src="{{STATIC_URL}}subjects/{{ view.game.player_subject.filename }}.png" alt="">
 	</div>
     {% else %}
    	<div class="col span_7_of_9">
 	  <h2>Hey, we both win!</h2>
-	  <h3>Your character is</h3>
-	  <img src="{{STATIC_URL}}subjects/{{ game.player_subject.filename }}.png" alt="">
-	  <h3>and my character is</h3>
-	  <img src="{{STATIC_URL}}subjects/{{ game.computer_subject.filename }}.png" alt="">
+	  <h3>My character is</h3>
+	  <img src="{{STATIC_URL}}subjects/{{ view.game.computer_subject.filename }}.png" alt="">
+	  <h3>and your character is</h3>
+	  <img src="{{STATIC_URL}}subjects/{{ view.game.player_subject.filename }}.png" alt="">
 	</div>
     {% endif %}
     </div>

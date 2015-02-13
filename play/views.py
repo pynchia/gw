@@ -125,13 +125,13 @@ class PickFeatureView(generic.TemplateView):
 
         game.active = False
         game.save()
+        # the view instance is available to the template
+        # so there is no need to add the game to the context
         self.game = game
 
         return super(PickFeatureView, self).get(request)
 
-    def get_context_data(self, **kwargs):
-        context = super(PickFeatureView, self).get_context_data(**kwargs)
-        context['game'] = self.game
-        return context
-
-
+#    def get_context_data(self, **kwargs):
+#        context = super(PickFeatureView, self).get_context_data(**kwargs)
+#        context['game'] = self.game
+#        return context
