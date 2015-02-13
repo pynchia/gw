@@ -131,7 +131,3 @@ class PickFeatureView(generic.TemplateView):
 
         return super(PickFeatureView, self).get(request)
 
-#    def get_context_data(self, **kwargs):
-#        context = super(PickFeatureView, self).get_context_data(**kwargs)
-#        context['game'] = self.game
-#        return context
