@@ -1,12 +1,12 @@
 import random
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import redirect
 # from django.http import HttpResponseRedirect
 from django.views import generic
 # from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 # from django.contrib.auth.models import User
 
-from play.models import Subject, BoardElement, Feature, Game
+from play.models import Subject, BoardElement, Feature
 
 
 class NewGameView(generic.RedirectView):
