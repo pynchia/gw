@@ -96,7 +96,7 @@ class Player(models.Model):
                 feat.num_el_match = num_el_match
                 feat_list.append(feat)
 
-        feat_list.sort(key=lambda k: k.num_el_match, reverse=True)
+        feat_list.sort(key=lambda f: f.num_el_match, reverse=True)
         return feat_list
 
 

@@ -2,14 +2,16 @@ import random
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import redirect
 # from django.http import HttpResponseRedirect
-from django.views import generic
+from django.views.generic import RedirectView, ListView, TemplateView
+from django.views.generic.detail import SingleObjectMixin
+
 # from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 # from django.contrib.auth.models import User
 
 from play.models import Subject, BoardElement, Feature
 
 
-class NewGameView(generic.RedirectView):
+class NewGameView(RedirectView):
     permanent = False
     # Django bug 17914: reverse() and pattern_name give error
     # on namespaced views! So, in case, use
@@ -39,7 +41,7 @@ class NewGameView(generic.RedirectView):
         return super(NewGameView, self).get(request)
 
 
-class PlayGameView(generic.ListView):
+class PlayGameView(ListView):
     template_name = "play/play.html"
     context_object_name = "player_board"
 
@@ -62,11 +64,11 @@ class PlayGameView(generic.ListView):
         return context
 
 
-class PickFeatureView(generic.TemplateView):
+class PickFeatureView(TemplateView):
     template_name = "play/end.html"
 
-    def get(self, request, feat_id):
-        feature = Feature.objects.get(pk=feat_id)
+    def get(self, request, pk):
+        feature = Feature.objects.get(pk=pk)
         # all the characters who have that feature
         subjects = feature.subject.all()
 
