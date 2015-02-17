@@ -60,6 +60,9 @@ class Player(models.Model):
 
     # add any further attributes beloging to the player
 
+    def __unicode__(self):
+        return self.user
+
     def add_board_elements(self):
         # create board element for the player
         for subj in Subject.objects.all():
@@ -144,6 +147,12 @@ class Game(models.Model):
 
     class Meta:
         get_latest_by = "created_on"
+
+    def __unicode__(self):
+        return u"player=%s, player_subject=%s, computer_subject=%s, active=%s, won by=%s, difficulty=%s" % (self.player.user, self.player_subject,
+                             self.computer_subject, self.active,
+                             self.get_won_by_display(),
+                             self.get_difficulty_display())
 
     def pick_best_feature(self, computer_num_el):
         """Find the best feature to pick (for the computer), based
