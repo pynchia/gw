@@ -22,7 +22,7 @@
         <h2>Features</h2>
         {% for feature in player_features %}
             <p>
-	    <a href="{% url 'play:pickfeat' feature.id %}">{{ feature.description }} ({{ feature.num_el_match }})</a>
+	    <a href="{% url 'play:pickfeat' feature.id %}">{{ feature.description|upper }} ({{ feature.num_el_match }})</a>
 	    </p>
         {% endfor %}
       </div>
