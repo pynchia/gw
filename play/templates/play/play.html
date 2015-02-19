@@ -9,7 +9,7 @@
 {% block boards %}
     <div class="section group">
       <div class="col span_9_of_9">
-        <h2>Computer's character is...</h2>
+	      <h2>Computer's character is... ({{ player_num_active }} remain)</h2>
         {% for character in player_board %}
           {% if character.active %}
 	    <img src="{{STATIC_URL}}subjects/{{ character.subject.filename }}.png" alt="">
@@ -27,7 +27,7 @@
     </div>
     <div class="section group">
       <div class="col span_9_of_9">
-	<h2>{{ user.username|capfirst }}'s character is...</h2>
+	      <h2>{{ user.username|capfirst }}'s character is... ({{ computer_num_active }} remain)</h2>
         {% for character in computer_board %}
           {% if character.active %}
             {% if character.subject != game.player_subject %}

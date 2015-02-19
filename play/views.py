@@ -41,23 +41,26 @@ class NewGameView(RedirectView):
         return super(NewGameView, self).get(request)
 
 
-class PlayGameView(ListView):
+class PlayGameView(TemplateView):
     template_name = "play/play.html"
     context_object_name = "player_board"
-
-    def get_queryset(self):
-        player = self.request.user.player
-        return player.boardelement_set.filter(owned_by_player=True
-                                             ).order_by('id')
 
     def get_context_data(self, **kwargs):
         context = super(PlayGameView, self).get_context_data(**kwargs)
         player = self.request.user.player
+        player_board = player.boardelement_set.filter(owned_by_player=True
+                                                     ).order_by('id')
+        context['player_board'] = player_board
+        context['player_num_active'] = player_board.filter(active=True
+                                                          ).count()
         context['player_features'] = player.get_features(
                                                owned_by_player=True)
-        context['computer_board'] = BoardElement.objects.filter(
-                                        player=player,
-                                        owned_by_player=False).order_by('id')
+        computer_board = player.boardelement_set.filter(
+                                               owned_by_player=False
+                                               ).order_by('id')
+        context['computer_board'] = computer_board
+        context['computer_num_active'] = computer_board.filter(active=True
+                                                              ).count()
         context['computer_features'] = player.get_features(
                                                  owned_by_player=False)
         context['game'] = player.game_set.latest()
