@@ -8,7 +8,7 @@
 {% endblock %}
 {% block boards %}
     <div class="section group">
-      <div class="col span_7_of_9">
+      <div class="col span_9_of_9">
         <h2>Computer's character is...</h2>
         {% for character in player_board %}
           {% if character.active %}
@@ -17,18 +17,16 @@
 	    <img src="{{STATIC_URL}}subjects/{{ character.subject.filename }}-inactive.png" alt="">
 	  {% endif %}
         {% endfor %}
-      </div>
-      <div class="col span_2_of_9">
-        <h2>Features</h2>
-        {% for feature in player_features %}
-            <p>
-	    <a href="{% url 'play:pickfeat' feature.id %}">{{ feature.description|upper }} ({{ feature.num_el_match }})</a>
-	    </p>
-        {% endfor %}
+        <h2>Pick a feature</h2>
+	<p>
+          {% for feature in player_features %}
+	    <a href="{% url 'play:pickfeat' feature.id %}">{{ feature.description|upper }} ({{ feature.num_el_match }}), </a>
+          {% endfor %}
+	</p>
       </div>
     </div>
     <div class="section group">
-      <div class="col span_7_of_9">
+      <div class="col span_9_of_9">
 	<h2>{{ user.username|capfirst }}'s character is...</h2>
         {% for character in computer_board %}
           {% if character.active %}
@@ -41,14 +39,12 @@
 	    <img src="{{STATIC_URL}}subjects/{{ character.subject.filename }}-inactive.png" alt="">
 	  {% endif %}
         {% endfor %}
-      </div>
-      <div class="col span_2_of_9">
         <h2>Features</h2>
+	<p>
         {% for feature in computer_features %}
-          <p>
-	    {{ feature.description }} ({{ feature.num_el_match }})
-	  </p>
+	    {{ feature.description }} ({{ feature.num_el_match }}),&nbsp;
         {% endfor %}
+	</p>
       </div>
     </div>
 {% endblock %}
