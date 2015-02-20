@@ -6,7 +6,8 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 
-from play.models import Player
+from django.db.models import Count
+from play.models import Player, Game
 
 class SignUpView(generic.CreateView):
     model = User
@@ -47,12 +48,28 @@ class HomePageView(generic.TemplateView):
             try:
                 player = self.request.user.player
                 self.continue_game = player.game_set.latest().active
+            # no games played yet
             except ObjectDoesNotExist:
                 self.continue_game = False
+        else:
+            self.continue_game = False
         return super(HomePageView, self).get(request, *args, **kwargs)
 
     def get_context_data(self):
         context = super(HomePageView, self).get_context_data()
-        context["continue_game"] = getattr(self, "continue_game", False)
+        # context["continue_game"] = getattr(self, "continue_game", False)
+        context["continue_game"] = self.continue_game
+        players_won = Player.objects.filter(
+                    game__won_by=Game.PLAYER).annotate(nwon=Count('game'))
+        players_lost = Player.objects.filter(
+                    game__won_by=Game.COMPUTER).annotate(nlost=Count('game'))
+        players_draw = Player.objects.filter(
+                    game__won_by=Game.DRAW).annotate(ndraw=Count('game'))
+        hall_fame = []
+        for t in zip(players_won, players_lost, players_draw):
+            hall_fame.append((t[0].user, t[0].nwon, t[1].nlost, t[2].ndraw))
+        hall_fame.sort(key=lambda t: t[1], reverse=True)
+        context["hall_fame"] = hall_fame
+
         return context
 

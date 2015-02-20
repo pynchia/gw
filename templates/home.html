@@ -1,16 +1,40 @@
 {% extends "base.html" %}
 {% block actions %}
-	{% if user.is_authenticated %}
+{% if user.is_authenticated %}
 		<h2>Welcome {{ user.username|capfirst }}</h2>
 		{% if continue_game %}
 		  <h3><a href="{% url 'play:playgame' %}">Continue last game</a></h3>
 		{% endif %}
 		<h3><a href="{% url 'play:newgame' "0" %}">Start a new game</a></h3>
 		<h3><a href="{% url 'logout' %}">Logout</a></h3>
-	{% else %}
+{% else %}
 		<h3>Welcome to the game</h3>
 		<h3>Please <a href="{% url 'signup' %}">register</a>
 			or <a href="{% url 'login' %}">login</a>
 		</h3>
-	{% endif %}
+{% endif %}
+{% endblock %}
+{% block boards %}
+{% if user.is_authenticated %}
+		<div class="section group">
+			<br>
+			<h2>Hall of fame</h2>
+			<table>
+			<tr>
+				<th>Player&nbsp;</th>
+				<th>Won&nbsp;</th>
+				<th>Lost&nbsp;</th>
+				<th>Draw&nbsp;</th>
+			</tr>
+			{% for player, won, lost, draw in hall_fame %}
+			<tr>
+				<td>{{ player|capfirst }}</td>
+				<td>{{ won }}</td>
+				<td>{{ lost }}</td>
+				<td>{{ draw }}</td>
+			</tr>
+			{% endfor %}
+			</table>
+		</div>
+{% endif %}
 {% endblock %}

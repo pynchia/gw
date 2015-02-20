@@ -130,8 +130,8 @@ class PickFeatureView(TemplateView):
 
         game.active = False
         game.save()
-        # the view instance is available to the template
-        # so there is no need to add the game to the context
+        # the view instance is available to the template by default
+        # there is no need to add the game to the context
         self.game = game
 
         return super(PickFeatureView, self).get(request)
