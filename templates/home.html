@@ -24,17 +24,19 @@
 			<h2>Hall of fame</h2>
 			<table>
 			<tr>
+				<th>#&nbsp;</th>
 				<th>Player&nbsp;</th>
 				<th>Won&nbsp;</th>
 				<th>Lost&nbsp;</th>
 				<th>Draw&nbsp;</th>
 			</tr>
-			{% for player, won, lost, draw in hall_fame %}
+			{% for pos, entry in hall_fame %}
 			<tr>
-				<td>{{ player|capfirst }}</td>
-				<td>{{ won }}</td>
-				<td>{{ lost }}</td>
-				<td>{{ draw }}</td>
+				<td>{{ pos }}</td>
+				<td>{{ entry.0|capfirst }}</td>
+				<td>{{ entry.1 }}</td>
+				<td>{{ entry.2 }}</td>
+				<td>{{ entry.3 }}</td>
 			</tr>
 			{% endfor %}
 			</table>

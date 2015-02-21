@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from django.db.models import Count
 from play.models import Player, Game
 
+
 class SignUpView(generic.CreateView):
     model = User
     template_name = "accounts/signup.html"
@@ -57,19 +58,33 @@ class HomePageView(generic.TemplateView):
 
     def get_context_data(self):
         context = super(HomePageView, self).get_context_data()
-        # context["continue_game"] = getattr(self, "continue_game", False)
         context["continue_game"] = self.continue_game
-        players_won = Player.objects.filter(
-                    game__won_by=Game.PLAYER).annotate(nwon=Count('game'))
-        players_lost = Player.objects.filter(
-                    game__won_by=Game.COMPUTER).annotate(nlost=Count('game'))
-        players_draw = Player.objects.filter(
-                    game__won_by=Game.DRAW).annotate(ndraw=Count('game'))
-        hall_fame = []
-        for t in zip(players_won, players_lost, players_draw):
-            hall_fame.append((t[0].user, t[0].nwon, t[1].nlost, t[2].ndraw))
-        hall_fame.sort(key=lambda t: t[1], reverse=True)
-        context["hall_fame"] = hall_fame
+        # the first solution below is optimal as far as the query
+        # is concerned but if a player has not won/lost/drawn any game yet
+        # then he does not appear in the results, making the lists shorter
+        # and messing things up
+        #players_won = Player.objects.filter(
+        #            game__won_by=Game.PLAYER).annotate(nwon=Count('game'))
+        #players_lost = Player.objects.filter(
+        #            game__won_by=Game.COMPUTER).annotate(nlost=Count('game'))
+        #players_draw = Player.objects.filter(
+        #            game__won_by=Game.DRAW).annotate(ndraw=Count('game'))
+        #hall_fame = []
+        #for t in zip(players_won, players_lost, players_draw):
+        #    hall_fame.append((t[0].user.username,
+        #                      t[0].nwon, t[1].nlost, t[2].ndraw))
 
+        # so, the best thing to do is to scan each player for his games
+        players = Player.objects.all()
+        hall_fame = []
+        for p in players:
+            nwon = p.game_set.filter(won_by=Game.PLAYER).count()
+            nlost = p.game_set.filter(won_by=Game.COMPUTER).count()
+            ndraw = p.game_set.filter(won_by=Game.DRAW).count()
+            player_stats = (p.user.username, nwon, nlost, ndraw)
+            hall_fame.append(player_stats)
+
+        hall_fame.sort(key=lambda h: h[1], reverse=True)
+        context["hall_fame"] = enumerate(hall_fame, start=1)
         return context
 

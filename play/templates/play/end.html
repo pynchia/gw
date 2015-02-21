@@ -11,7 +11,7 @@
     <div class="section group">
     {% if view.game.won_by == view.game.PLAYER %}
    	<div class="col span_7_of_9">
-		<h2>You win {{ user.username|capfirst }}!</h2>
+		<h2>You win, {{ user.username|capfirst }}!</h2>
 	  <h3>My character is</h3>
 	  <img src="{{STATIC_URL}}subjects/{{ view.game.computer_subject.filename }}.png" alt="">
 	</div>
@@ -23,7 +23,7 @@
 	</div>
     {% else %}
    	<div class="col span_7_of_9">
-	  <h2>Hey, we both win!</h2>
+	  <h2>Hey, it's a draw!</h2>
 	  <h3>My character is</h3>
 	  <img src="{{STATIC_URL}}subjects/{{ view.game.computer_subject.filename }}.png" alt="">
 	  <h3>and your character is</h3>
