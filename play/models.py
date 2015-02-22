@@ -77,16 +77,17 @@ class Player(models.Model):
 
     def board_el(self, owned_by_player):
         """Return the queryset of active board elements matching
-        the player and belonging to the player/computer"""
+        the feature and belonging to the player/computer"""
         # get all the subjects matching the feature
         return self.boardelement_set.filter(
                                         active=True,
                                         owned_by_player=owned_by_player)
 
-    def get_features(self, owned_by_player):
+    def get_features(self, owned_by_player, all_features):
         """Return the features along with the number of board
         elements that match each. Those features present in the whole set
-        of board elements or none of them are not returned"""
+        of board elements or in none of them are returned only if
+        the all_features flag is True"""
         features = Feature.objects.all()
         num_el_onboard = self.board_el(owned_by_player=owned_by_player
                                       ).count()
@@ -95,7 +96,8 @@ class Player(models.Model):
             num_el_match = feat.matching_el(player=self, match=True,
                                             owned_by_player=owned_by_player
                                            ).count()
-            if num_el_match != 0 and num_el_match != num_el_onboard:
+            if all_features or \
+               (num_el_match != 0 and num_el_match != num_el_onboard):
                 feat.num_el_match = num_el_match
                 feat_list.append(feat)
 
@@ -157,7 +159,8 @@ class Game(models.Model):
     def pick_best_feature(self, computer_num_el):
         """Find the best feature to pick (for the computer), based
         on the difficulty of the game"""
-        features = self.player.get_features(owned_by_player=False)
+        features = self.player.get_features(owned_by_player=False,
+                                            all_features=False)
         if self.difficulty == self.EASY:
             best_feature = random.choice(features)
         else:

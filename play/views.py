@@ -54,7 +54,9 @@ class PlayGameView(TemplateView):
         context['player_num_active'] = player_board.filter(active=True
                                                           ).count()
         context['player_features'] = player.get_features(
-                                               owned_by_player=True)
+                                               owned_by_player=True,
+                                               all_features=False)
+
         computer_board = player.boardelement_set.filter(
                                                owned_by_player=False
                                                ).order_by('id')
@@ -62,7 +64,8 @@ class PlayGameView(TemplateView):
         context['computer_num_active'] = computer_board.filter(active=True
                                                               ).count()
         context['computer_features'] = player.get_features(
-                                                 owned_by_player=False)
+                                                 owned_by_player=False,
+                                                 all_features=True)
         context['game'] = player.game_set.latest()
         return context
 
