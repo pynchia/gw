@@ -76,9 +76,8 @@ class Player(models.Model):
                                          owned_by_player=False)
 
     def board_el(self, owned_by_player):
-        """Return the queryset of active board elements matching
-        the feature and belonging to the player/computer"""
-        # get all the subjects matching the feature
+        """Return the queryset of active board elements
+        belonging to the player/computer"""
         return self.boardelement_set.filter(
                                         active=True,
                                         owned_by_player=owned_by_player)
