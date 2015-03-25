@@ -53,9 +53,10 @@ class PlayGameView(TemplateView):
         context['player_board'] = player_board
         context['player_num_active'] = player_board.filter(active=True
                                                           ).count()
-        context['player_features'] = player.get_features(
-                                               owned_by_player=True,
-                                               all_features=False)
+        context['player_features'] = Feature.objects.get_features(
+                                                player=player,
+                                                owned_by_player=True,
+                                                all_features=False)
 
         computer_board = player.boardelement_set.filter(
                                                owned_by_player=False
@@ -63,9 +64,10 @@ class PlayGameView(TemplateView):
         context['computer_board'] = computer_board
         context['computer_num_active'] = computer_board.filter(active=True
                                                               ).count()
-        context['computer_features'] = player.get_features(
-                                                 owned_by_player=False,
-                                                 all_features=True)
+        context['computer_features'] = Feature.objects.get_features(
+                                                player=player,
+                                                owned_by_player=False,
+                                                all_features=True)
         context['game'] = player.game_set.latest()
         return context
 
@@ -82,17 +84,22 @@ class PickFeatureView(TemplateView):
         game = player.game_set.filter(active=True).latest()
         match = game.computer_subject not in subjects 
         # get the characters onboard who do not match the feature
-        elements = feature.matching_el(player=player,
-                                       match=match,
-                                       owned_by_player=True)
-        # and deactivate them on the board
+        elements = BoardElement.objects.matching_el(feature=feature,
+                                                    player=player,
+                                                    match=match,
+                                                    owned_by_player=True)
+                    # and deactivate them on the board
         elements.update(active=False)
 
         # now the computer moves
-        # how many characters remain on player's board
-        player_num_el = player.board_el(owned_by_player=True).count()
-        # how many characters are on computer's board
-        computer_num_el = player.board_el(owned_by_player=False).count()
+        # count how many characters remain on player's board
+        player_num_el = BoardElement.objects.board_el(player=player,
+                                                      owned_by_player=True
+                                                     ).count()
+        # count how many characters are on computer's board
+        computer_num_el = BoardElement.objects.board_el(player=player,
+                                                        owned_by_player=False
+                                                       ).count()
         if player_num_el > 1 or computer_num_el == 2:
             if computer_num_el == 2:
                 if player_num_el == 1:
@@ -101,18 +108,24 @@ class PickFeatureView(TemplateView):
                     game.won_by = game.COMPUTER
             else:
                 # pick the best feature according to the difficulty
-                feature = game.pick_best_feature(computer_num_el)
+                feature = Feature.objects.pick_best_feature(game,
+                                                            computer_num_el)
                 # all the characters who have that feature
                 subjects = feature.subject.all()
                 match = game.player_subject not in subjects 
                 # get the characters onboard who do not match the feature
-                elements = feature.matching_el(player=player,
-                                               match=match,
-                                               owned_by_player=False)
+                elements = BoardElement.objects.matching_el(
+                                                    feature=feature,
+                                                    player=player,
+                                                    match=match,
+                                                    owned_by_player=False)
                 # and deactivate them on the board
                 elements.update(active=False)
-                computer_num_el = player.board_el(owned_by_player=False
-                                                 ).count()
+                # now count the remaining ones
+                computer_num_el = BoardElement.objects.board_el(
+                                                        player=player,
+                                                        owned_by_player=False
+                                                       ).count()
                 if computer_num_el == 1:
                     game.won_by = game.COMPUTER
                 else:
@@ -121,7 +134,8 @@ class PickFeatureView(TemplateView):
         else:
             # it must guess the player's character
             # get the remaining characters on its board
-            computer_els = player.board_el(owned_by_player=False)
+            computer_els = BoardElement.objects.board_el(player=player,
+                                                       owned_by_player=False)
             # guess one randomly
             guessed_el = random.choice(computer_els)
             # is it the correct guess?

@@ -6,7 +6,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 
-from django.db.models import Count
+# from django.db.models import Count
 from play.models import Player, Game
 
 
@@ -84,6 +84,7 @@ class HomePageView(generic.TemplateView):
             player_stats = (p.user.username, nwon, nlost, ndraw)
             hall_fame.append(player_stats)
 
+        # sort the players by nwon #of games won
         hall_fame.sort(key=lambda h: h[1], reverse=True)
         context["hall_fame"] = enumerate(hall_fame, start=1)
         return context

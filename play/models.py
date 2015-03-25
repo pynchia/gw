@@ -26,6 +26,54 @@ class Subject(models.Model):
     def __unicode__(self):
         return "%s (%s)" % (self.name, self.filename)
 
+class _FeatureMgr(models.Manager):
+
+    def get_features(self, player, owned_by_player, all_features):
+        """Given a player and a board (player's or computer's)
+        return the features along with the number of board elements
+        (characters) that match each.
+        Those features present in the whole set of board elements or
+        in none of them are returned only if the all_features flag is True
+        """
+        # get all the possible features
+        # TBD it should work if
+        # features = self.all()
+        features = Feature.objects.all()
+        num_el_onboard = BoardElement.objects.board_el(player=player,
+                                            owned_by_player=owned_by_player
+                                            ).count()
+        feat_list = []
+        for feat in features:
+            num_el_match = BoardElement.objects.matching_el(feature=feat,
+                                                            player=player,
+                                                            match=True,
+                                            owned_by_player=owned_by_player
+                                           ).count()
+            if all_features or \
+               (num_el_match != 0 and num_el_match != num_el_onboard):
+                feat.num_el_match = num_el_match
+                feat_list.append(feat)
+
+        feat_list.sort(key=lambda f: f.num_el_match, reverse=True)
+        return feat_list
+
+    def pick_best_feature(self, game, computer_num_el):
+        """Find the best feature to pick (for the computer), based
+        on the difficulty of the game"""
+        features = Feature.objects.get_features(player=game.player,
+                                                owned_by_player=False,
+                                                all_features=False)
+        if game.difficulty == game.EASY:
+            # pick a feature at random
+            best_feature = random.choice(features)
+        else:
+            # pick the most probable feature
+            computer_num_el /= 2
+            for best_feature in features:
+                if best_feature.num_el_match <= computer_num_el:
+                    break
+        return best_feature
+
 
 class Feature(models.Model):
     """the traits peculiar to each character
@@ -34,19 +82,7 @@ class Feature(models.Model):
     subject = models.ManyToManyField(Subject)
     description = models.CharField(max_length=FEATURE_DESCR_MAX)
 
-    def matching_el(self, player, match, owned_by_player):
-        """Return the queryset of active board elements matching/non-matching
-        (match=True/match=False) the feature, player and belonging to the
-        player/computer"""
-        subjects = self.subject.all() 
-        board_elements = player.board_el(owned_by_player=owned_by_player)
-        if match:
-            # get all the subjects matching the feature
-            match_elements = board_elements.filter(subject__in=subjects)
-        else:
-            # get all the subjects non-matching the feature
-            match_elements = board_elements.exclude(subject__in=subjects)
-        return match_elements
+    objects = _FeatureMgr()
 
     def __unicode__(self):
         return self.description
@@ -62,46 +98,6 @@ class Player(models.Model):
 
     def __unicode__(self):
         return self.user
-
-    def add_board_elements(self):
-        # create board element for the player
-        for subj in Subject.objects.all():
-            self.boardelement_set.create(player=self,
-                                         subject=subj,
-                                         owned_by_player=True)
-        # and for the computer
-        for subj in Subject.objects.all():
-            self.boardelement_set.create(player=self,
-                                         subject=subj,
-                                         owned_by_player=False)
-
-    def board_el(self, owned_by_player):
-        """Return the queryset of active board elements
-        belonging to the player/computer"""
-        return self.boardelement_set.filter(
-                                        active=True,
-                                        owned_by_player=owned_by_player)
-
-    def get_features(self, owned_by_player, all_features):
-        """Return the features along with the number of board
-        elements that match each. Those features present in the whole set
-        of board elements or in none of them are returned only if
-        the all_features flag is True"""
-        features = Feature.objects.all()
-        num_el_onboard = self.board_el(owned_by_player=owned_by_player
-                                      ).count()
-        feat_list = []
-        for feat in features:
-            num_el_match = feat.matching_el(player=self, match=True,
-                                            owned_by_player=owned_by_player
-                                           ).count()
-            if all_features or \
-               (num_el_match != 0 and num_el_match != num_el_onboard):
-                feat.num_el_match = num_el_match
-                feat_list.append(feat)
-
-        feat_list.sort(key=lambda f: f.num_el_match, reverse=True)
-        return feat_list
 
 
 class Game(models.Model):
@@ -151,23 +147,51 @@ class Game(models.Model):
 
     def __unicode__(self):
         return u"player=%s, player_subject=%s, computer_subject=%s, active=%s, won by=%s, difficulty=%s" % (self.player.user, self.player_subject,
-                             self.computer_subject, self.active,
-                             self.get_won_by_display(),
-                             self.get_difficulty_display())
+                              self.computer_subject, self.active,
+                              self.get_won_by_display(),
+                              self.get_difficulty_display())
 
-    def pick_best_feature(self, computer_num_el):
-        """Find the best feature to pick (for the computer), based
-        on the difficulty of the game"""
-        features = self.player.get_features(owned_by_player=False,
-                                            all_features=False)
-        if self.difficulty == self.EASY:
-            best_feature = random.choice(features)
+
+class _BoardElementMgr(models.Manager):
+
+    def add_board_elements(self, player):
+        """Create all the board elements for the given player.
+        Each player has two sets of characters: one set for the ones in
+        the player's board and one set for the ones in the computer's
+        board. The two sets are reused by each new game
+        """
+        # create the board elements in the player's board
+        for subj in Subject.objects.all():
+            player.boardelement_set.create(subject=subj,
+                                         owned_by_player=True)
+        # create the board elements in the computer's board
+        for subj in Subject.objects.all():
+            player.boardelement_set.create(subject=subj,
+                                         owned_by_player=False)
+
+    def board_el(self, player, owned_by_player):
+        """Return the player's active board elements
+        belonging to the player/computer"""
+        return player.boardelement_set.filter(
+                                        active=True,
+                                        owned_by_player=owned_by_player)
+
+    def matching_el(self, feature, player, match, owned_by_player):
+        """Return the player's active board elements matching/non-matching
+        (match=True/match=False) the feature and belonging to the
+        player/computer"""
+        # all the characters who have that feature
+        subjects = feature.subject.all() 
+        # TBD
+        board_elements = self.board_el(player=player,
+                                       owned_by_player=owned_by_player)
+        if match:
+            # get all the subjects matching the feature
+            match_elements = board_elements.filter(subject__in=subjects)
         else:
-            computer_num_el /= 2
-            for best_feature in features:
-                if best_feature.num_el_match <= computer_num_el:
-                    break
-        return best_feature
+            # get all the subjects non-matching the feature
+            match_elements = board_elements.exclude(subject__in=subjects)
+        return match_elements
 
 
 class BoardElement(models.Model):
@@ -182,6 +206,8 @@ class BoardElement(models.Model):
     player = models.ForeignKey(Player)
     active = models.BooleanField(default=True)
     owned_by_player = models.BooleanField(default=True)
+
+    objects = _BoardElementMgr()
 
     def __unicode__(self):
         return str(self.subject)

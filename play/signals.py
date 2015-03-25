@@ -3,7 +3,7 @@
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
-from .models import Player
+from .models import Player, BoardElement
 
 
 @receiver(post_save, sender=User)
@@ -12,4 +12,5 @@ def create_player(sender, instance, created, **kwargs):
         player = Player()
         player.user = instance
         player.save()
-        player.add_board_elements()
+        BoardElement.objects.add_board_elements(player=player)
+
