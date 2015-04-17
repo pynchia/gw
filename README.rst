@@ -1,4 +1,3 @@
-# gw
 The online version of a glorious table-game. Guess W(hich) one it is.
 Fantastic game for kids of age five and over.
 It's built with Python 2.7 and Django 1.7
