@@ -36,7 +36,6 @@ class _FeatureMgr(models.Manager):
         in none of them are returned only if the all_features flag is True
         """
         # get all the possible features
-        # TBD it should work if
         features = self.all()
         # features = Feature.objects.all()
         num_el_onboard = BoardElement.objects.board_el(player=player,
