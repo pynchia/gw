@@ -37,8 +37,8 @@ class _FeatureMgr(models.Manager):
         """
         # get all the possible features
         # TBD it should work if
-        # features = self.all()
-        features = Feature.objects.all()
+        features = self.all()
+        # features = Feature.objects.all()
         num_el_onboard = BoardElement.objects.board_el(player=player,
                                             owned_by_player=owned_by_player
                                             ).count()
@@ -182,14 +182,14 @@ class _BoardElementMgr(models.Manager):
         player/computer"""
         # all the characters who have that feature
         subjects = feature.subject.all() 
-        # TBD
+        # get all the characters on the board
         board_elements = self.board_el(player=player,
                                        owned_by_player=owned_by_player)
         if match:
-            # get all the subjects matching the feature
+            # get all the characters on the board matching the feature
             match_elements = board_elements.filter(subject__in=subjects)
         else:
-            # get all the subjects non-matching the feature
+            # get all the characters on the board non-matching the feature
             match_elements = board_elements.exclude(subject__in=subjects)
         return match_elements
 
