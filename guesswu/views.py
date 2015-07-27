@@ -70,9 +70,9 @@ class HomePageView(generic.TemplateView):
         #players_draw = Player.objects.filter(
         #            game__won_by=Game.DRAW).annotate(ndraw=Count('game'))
         #hall_fame = []
-        #for t in zip(players_won, players_lost, players_draw):
-        #    hall_fame.append((t[0].user.username,
-        #                      t[0].nwon, t[1].nlost, t[2].ndraw))
+        #for pwon, plost, pdraw in zip(players_won, players_lost, players_draw):
+        #    hall_fame.append((pwon.user.username,
+        #                      pwon.nwon, plost.nlost, pdraw.ndraw))
 
         # so, the best thing to do is to scan each player for his games
         players = Player.objects.all()
